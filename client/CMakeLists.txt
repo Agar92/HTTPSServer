@@ -21,3 +21,16 @@ target_link_libraries(http-client PRIVATE
 )
 
 add_compile_options(-g)
+
+
+find_program(CLANG_FORMAT_APP clang-format)
+###message("CLANG_FORMAT_APP=${CLANG_FORMAT_APP}")
+include(ClangFormat.cmake)
+file(GLOB_RECURSE ALL_SOURCE_FILES *.cpp *.cxx *.h *.hpp)
+add_custom_target(
+        clangformat
+        COMMAND ${CLANG_FORMAT_APP}
+        -style=file
+        -i
+        ${ALL_SOURCE_FILES}
+)

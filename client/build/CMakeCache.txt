@@ -21,6 +21,9 @@ Boost_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0
 Boost_INCLUDE_DIR:PATH=/usr/include
 
 //Path to a program.
+CLANG_FORMAT_APP:FILEPATH=/usr/bin/clang-format
+
+//Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=/usr/bin/addr2line
 
 //Path to a program.

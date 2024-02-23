@@ -129,6 +129,19 @@ http-client/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/http-client.dir/build.make CMakeFiles/http-client.dir/build
 .PHONY : http-client/fast
 
+#=============================================================================
+# Target rules for targets named clangformat
+
+# Build rule for target.
+clangformat: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 clangformat
+.PHONY : clangformat
+
+# fast build rule for target.
+clangformat/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/clangformat.dir/build.make CMakeFiles/clangformat.dir/build
+.PHONY : clangformat/fast
+
 HTTPGetRequest.o: HTTPGetRequest.cpp.o
 .PHONY : HTTPGetRequest.o
 
@@ -185,6 +198,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... clangformat"
 	@echo "... http-client"
 	@echo "... HTTPGetRequest.o"
 	@echo "... HTTPGetRequest.i"
