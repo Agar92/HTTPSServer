@@ -11,13 +11,10 @@ namespace http {
 namespace server {
 
 request_handler::request_handler(const std::string& doc_root)
-  : doc_root_(doc_root)
-{
-}
+  : doc_root_(doc_root) {}
 
 void request_handler::handle_request(const request& req, reply& rep)
 {
-  std::cout<<"request_handler::handle_request: 1"<<std::endl;
   // Decode url to path.
   std::string request_path;
   if (!url_decode(req.uri, request_path))
@@ -26,8 +23,6 @@ void request_handler::handle_request(const request& req, reply& rep)
     return;
   }
 
-  std::cout<<"request_handler::handle_request: 2 request_path="<<request_path<<std::endl;
-
   // Request path must be absolute and not contain "..".
   if (request_path.empty() || request_path[0] != '/'
       || request_path.find("..") != std::string::npos)
@@ -35,8 +30,6 @@ void request_handler::handle_request(const request& req, reply& rep)
     rep = reply::stock_reply(reply::bad_request);
     return;
   }
-
-  std::cout<<"request_handler::handle_request: 3"<<std::endl;
 
   // If path ends in slash (i.e. is a directory) then add "index.html".
   if (request_path[request_path.size() - 1] == '/')
@@ -71,16 +64,6 @@ void request_handler::handle_request(const request& req, reply& rep)
   rep.headers[0].value = std::to_string(rep.content.size());
   rep.headers[1].name = "Content-Type";
   rep.headers[1].value = mime_types::extension_to_type(extension);
-  std::cout<<"req.method="<<req.method<<" req.uri="<<req.uri<<" full_path="<<full_path
-           <<" rep.content="<<rep.content
-           <<" rep.headers[0].name="<<rep.headers[0].name
-           <<" rep.headers[0].value="<<rep.headers[0].value
-           <<" rep.headers[1].name="<<rep.headers[1].name
-           <<" rep.headers[1].value="<<rep.headers[1].value
-           <<std::endl;
-  std::ofstream out("out.png");
-  out.write( rep.content.data(), rep.content.size() );
-  out.close();
 }
 
 bool request_handler::url_decode(const std::string& in, std::string& out)

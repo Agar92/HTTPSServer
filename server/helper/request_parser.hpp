@@ -36,11 +36,9 @@ public:
     std::cout<<"request_parser::parse"<<std::endl;
     while (begin != end)
     {
-      ///std::cout<<"*begin="<<*begin<<std::endl;
       result_type result = consume(req, *begin++);
       std::string URI=req.uri;
       boost::to_upper(URI);
-      std::cout<<"URI="<<URI<<std::endl;
       if(URI == "SERVER SHUTDOWN" ||
          URI == "SERVER EXIT"     ||
          URI == "SERVER STOP"     ||
