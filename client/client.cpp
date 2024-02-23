@@ -56,6 +56,11 @@ public:
           boost::asio::placeholders::error));
   }
 
+  ~client()
+  {
+    m_io_context.run();
+  }
+
   bool verify_certificate(bool preverified,
       boost::asio::ssl::verify_context& ctx)
   {
@@ -105,6 +110,10 @@ public:
           requested_file_extension = m_relativeURL.substr(last_dot_pos + 1);
       else requested_file_extension=".dat";
       std::cout<<"requested_file_extension="<<requested_file_extension<<std::endl;
+      bool data_is_text=false;
+      if(requested_file_extension == "txt" ||
+         requested_file_extension == "dat" ||
+         requested_file_extension == "html") data_is_text=true;
 
       std::ostream request_stream(&m_request);
       request_stream << "GET " << m_relativeURL << " HTTP/1.1\r\n";
@@ -113,17 +122,33 @@ public:
       request_stream << "Connection: close\r\n\r\n";
 
       boost::asio::async_write(socket_, m_request,
-        [this](boost::system::error_code ec, std::size_t /*length*/)
+        [this,data_is_text](boost::system::error_code ec, std::size_t /*length*/)
       {
         boost::asio::async_read_until(socket_, m_response, "\r\n\r\n",
-          [this](boost::system::error_code ec, std::size_t bytes_transferred)
+          [this,data_is_text](boost::system::error_code ec, std::size_t bytes_transferred)
         {
+          if(data_is_text) m_response.consume(bytes_transferred);
           std::cout<<"@#@ bytes_transferred="<<bytes_transferred<<std::endl;
           std::cout<<"m_response="<<boost::asio::buffer_cast<const char*>(m_response.data())<<std::endl;
-          ReadData();
+          if (ec != boost::asio::error::eof && !ec)
+          {
+            std::cout<<"111 ec != boost::asio::error::eof"<<std::endl;
+            std::cout<<"requested_file_extension="<<requested_file_extension<<std::endl;
+            if(data_is_text)
+            {
+              std::cout<<"BEGIN WRITE received."<<requested_file_extension<<std::endl;
+              std::ofstream out("received." + requested_file_extension, std::ios::out | std::ios::binary);
+              out.write( boost::asio::buffer_cast<const char*>(m_response.data()), m_response.size());
+              out.close();
+              std::cout<<"END WRITE received."<<requested_file_extension<<std::endl;
+            }
+            else
+            {
+              ReadData();
+            }
+          }
         });
       });
-      m_io_context.run();
       /*
       boost::asio::async_write(socket_,
           boost::asio::buffer(request_, request_length),
@@ -145,8 +170,11 @@ public:
   {
     std::cout<<"HTTPGetRequest::ReadData(...)"<<std::endl;
     boost::asio::async_read(socket_, m_response, boost::asio::transfer_at_least(1),
-        [this](boost::system::error_code ec, std::size_t)
+        [this](boost::system::error_code ec, std::size_t bytes_transferred)
     {
+        ///m_response.consume(bytes_transferred);
+        if (ec == boost::asio::error::eof) std::cout<<"222 ec == boost::asio::error::eof"<<std::endl;
+        else  std::cout<<ec.message()<<std::endl;
         std::cout<<"HTTPGetRequest::ReadData(...) START"<<std::endl;
         static int THIS_FUNCTION_CALLS_COUNTER=0;
         THIS_FUNCTION_CALLS_COUNTER++;
@@ -213,44 +241,13 @@ public:
 
   
 
-  void handle_write(const boost::system::error_code& error,
-      size_t bytes_transferred)
-  {
-    if (!error)
-    {
-      boost::asio::async_read(socket_,
-          boost::asio::buffer(reply_, bytes_transferred),
-          boost::bind(&client::handle_read, this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
-    }
-    else
-    {
-      std::cout << "Write failed: " << error.message() << "\n";
-    }
-  }
-
-  void handle_read(const boost::system::error_code& error,
-      size_t bytes_transferred)
-  {
-    if (!error)
-    {
-      std::cout << "Reply: ";
-      std::cout.write(reply_, bytes_transferred);
-      std::cout << "\n";
-    }
-    else
-    {
-      std::cout << "Read failed: " << error.message() << "\n";
-    }
-  }
+  
 
 private:
   boost::asio::io_context& m_io_context;
   boost::asio::ssl::stream<boost::asio::ip::tcp::socket> socket_;
   char request_[max_length];
   char reply_[max_length];
-
 
   std::string m_host;
   std::string m_relativeURL;
