@@ -21,12 +21,10 @@ request_parser::result_type request_parser::consume(request& req, char input)
   case method_start:
     if (!is_char(input) || is_ctl(input) || is_tspecial(input))
     {
-      ///std::cout<<"STATE #1"<<std::endl;
       return bad;
     }
     else
     {
-      ///std::cout<<"STATE #2"<<std::endl;
       state_ = method;
       req.method.push_back(input);
       return indeterminate;
@@ -34,36 +32,30 @@ request_parser::result_type request_parser::consume(request& req, char input)
   case method:
     if (input == ' ')
     {
-      ///std::cout<<"STATE #3"<<std::endl;
       state_ = uri;
       return indeterminate;
     }
     else if (!is_char(input) || is_ctl(input) || is_tspecial(input))
     {
-      ///std::cout<<"STATE #4"<<std::endl;
       return bad;
     }
     else
     {
-      ///std::cout<<"STATE #5"<<std::endl;
       req.method.push_back(input);
       return indeterminate;
     }
   case uri:
     if (input == ' ' && req.temp != "SERVER")
     {
-      ///std::cout<<"STATE #6"<<std::endl;
       state_ = http_version_h;
       return indeterminate;
     }
     else if (is_ctl(input))
     {
-      ///std::cout<<"STATE #7"<<std::endl;
       return bad;
     }
     else
     {
-      ///std::cout<<"STATE #8"<<std::endl;
       req.uri.push_back(input);
       req.temp=req.uri;
       boost::to_upper(req.temp);

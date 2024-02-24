@@ -103,7 +103,7 @@ class client
           last_dot_pos != std::string::npos && last_dot_pos > last_slash_pos)
         requested_file_extension = m_relativeURL.substr(last_dot_pos + 1);
       else
-        requested_file_extension = ".dat";
+        requested_file_extension = "dat";
       std::cout << "requested_file_extension=" << requested_file_extension
                 << std::endl;
       bool data_is_text = false;
@@ -137,34 +137,19 @@ class client
                             << std::endl;
                   if (ec != boost::asio::error::eof && !ec)
                   {
-                    std::cout << "111 ec != boost::asio::error::eof"
-                              << std::endl;
-                    std::cout << "requested_file_extension="
-                              << requested_file_extension << std::endl;
                     if (data_is_text)
                     {
-                      std::cout << "BEGIN WRITE received."
-                                << requested_file_extension << std::endl;
                       std::ofstream out("received." + requested_file_extension,
                                         std::ios::out | std::ios::binary);
                       out.write(boost::asio::buffer_cast<const char*>(
                                     m_response.data()),
                                 m_response.size());
                       out.close();
-                      std::cout << "END WRITE received."
-                                << requested_file_extension << std::endl;
                     }
                     else { ReadData(); }
                   }
                 });
           });
-      /*
-      boost::asio::async_write(socket_,
-          boost::asio::buffer(request_, request_length),
-          boost::bind(&client::handle_write, this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
-      */
     }
     else { std::cout << "Handshake failed: " << error.message() << "\n"; }
   }
@@ -184,22 +169,9 @@ class client
           std::cout << "HTTPGetRequest::ReadData(...) START" << std::endl;
           static int THIS_FUNCTION_CALLS_COUNTER = 0;
           THIS_FUNCTION_CALLS_COUNTER++;
-          /*
-          std::string s( (std::istreambuf_iterator<char>(&m_response)),
-          std::istreambuf_iterator<char>() ); size_t
-          index=s.find("\r\n\r\n"); std::cout<<"index="<<index<<std::endl;
-          for(int i=index+4; i<s.length(); ++i) std::cout<<s[i];
-          std::cout<<std::endl;
-          const size_t shift=index+4;
-          */
           size_t size = m_response.size();
-          std::cout << "APPROACHING WRITE received.dat size=" << size
-                    << " THIS_FUNCTION_CALLS_COUNTER="
-                    << THIS_FUNCTION_CALLS_COUNTER << std::endl;
           if (size > 0)
           {
-            std::cout << "BEGIN WRITE received." << requested_file_extension
-                      << std::endl;
             std::unique_ptr<char> buf(new char[size]);
             m_response.sgetn(buf.get(), size);
             size_t shift = 0;
@@ -214,26 +186,15 @@ class client
               std::cout << "FINISH CHECK THE REPLY" << std::endl;
               shift = index + 4;
             }
-            std::cout << "STEP #6" << std::endl;
             file_contents.append(buf.get() + shift, size - shift);
             m_response.consume(size);
-            std::cout << "STEP #7" << std::endl;
             file_size += size - shift;
-            std::cout << "STEP #8" << std::endl;
-            std::cout << "size=" << size << " buf=";
-            for (int i = 0; i < size; ++i) std::cout << (buf.get())[i];
-            std::cout << std::endl;
-            std::cout << "END OF READING" << std::endl;
             m_receivedCB(buf.get(), size);
-            /// std::this_thread::sleep_for(1000ms);
-            std::cout << "STEP #9" << std::endl;
           }
           std::ofstream out("received." + requested_file_extension,
                             std::ios::out | std::ios::binary);
           out.write(file_contents.data(), file_size);
           out.close();
-          std::cout << "END WRITE received." << requested_file_extension
-                    << std::endl;
           if (ec != boost::asio::error::eof)
           {
             ReadData();

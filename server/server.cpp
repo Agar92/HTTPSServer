@@ -42,12 +42,6 @@ public:
     if (!error)
     {
       do_read();
-      /*
-      socket_.async_read_some(boost::asio::buffer(data_, max_length),
-          boost::bind(&session::handle_read, this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
-      */
     }
     else
     {
@@ -79,35 +73,29 @@ public:
         {
           if (!ec)
           {
+            /*
             std::cout<<"Read the request received:"<<std::endl;
             for(int i=0; i<bytes_transferred; ++i)
               std::cout<<data_[i];
             std::cout<<std::endl;
-
-
-//*            
+            */
             request_parser::result_type result;
             std::tie(result, std::ignore) = request_parser_.parse(
                 request_, data_, data_ + bytes_transferred);
 
             if (result == request_parser::good)
             {
-              std::cout<<"result == request_parser::good"<<std::endl;
               if( reply_.content.length() ) std::cout<<"reply_.content="<<reply_.content<<std::endl;
-              std::cout<<"BEFORE request_handler_.handle_request(request_, reply_);"<<std::endl;
               request_handler_.handle_request(request_, reply_);
-              std::cout<<"AFTER request_handler_.handle_request(request_, reply_);"<<std::endl;
               do_write();
             }
             else if (result == request_parser::bad)
             {
-              std::cout<<"result == request_parser::bad"<<std::endl;
               reply_ = reply::stock_reply(reply::bad_request);
               do_write();
             }
             else if (result == request_parser::shutdown)
             {
-              std::cout<<"result == request_parser::shutdown"<<std::endl;
               // Initiate graceful connection closure.
               // server::do_await_stop() is waiting for it:
               std::raise(SIGINT);//or std::raise(SIGINT);
@@ -116,8 +104,6 @@ public:
             {
               do_read();
             }
-            //////////m_io_context.run();
-//*/
           }
         });
   }
@@ -125,6 +111,7 @@ public:
 
   void do_write()
   {
+    /*
     std::cout<<"connection::do_write(): reply_.to_buffers().size()="<<reply_.to_buffers().size()<<std::endl;
     std::cout<<" reply_.content="<<reply_.content
              <<" reply_.headers[0].name="<<reply_.headers[0].name
@@ -143,14 +130,15 @@ public:
                     strlen(boost::asio::buffer_cast<const char*>( reply_.to_buffers().at(i) ))
                   );
     }
+    */
     boost::asio::async_write(socket_, reply_.to_buffers(),
-        [this,contents](boost::system::error_code ec, std::size_t bytes_transferred)
+        [this](boost::system::error_code ec, std::size_t bytes_transferred)
         {
           if (!ec)
           {
-            std::cout<<"SENT! bytes_transferred="<<bytes_transferred<<std::endl;
-            std::cout<<"contents: size="<<contents.size()<<std::endl;
-            std::cout<<contents.c_str()<<std::endl;
+            ///std::cout<<"SENT! bytes_transferred="<<bytes_transferred<<std::endl;
+            ///std::cout<<"contents: size="<<contents.size()<<std::endl;
+            ///std::cout<<contents.c_str()<<std::endl;
             do_read();
             /*
             // Initiate graceful connection closure.
@@ -185,21 +173,14 @@ private:
   ssl_socket socket_;
   enum { max_length = 8192 };
   char data_[max_length];
-  //
-  //
-  //
   /// The handler used to process the incoming request.
   request_handler& request_handler_;
-
   /// Buffer for incoming data.
   std::array<char, 8192> buffer_;
-
   /// The incoming request.
   request request_;
-
   /// The parser for the incoming request.
   request_parser request_parser_;
-
   /// The reply to be sent back to the client.
   reply reply_;
 };
