@@ -36,3 +36,19 @@ SERVER EXIT
 SERVER STOP
 SERVER FINISH
 
+
+
+
+
+Как сгенерировать самоподписывающийся сертификат SSL?
+Эти команды запускаются в папке сервера:
+$openssl genrsa -des3 -out server.key 2048
+$openssl req -new -key server.key -out server.csr
+$openssl x509 -req -days 3650 -in server.csr -signkey server.key -out server.crt
+$cp server.key server.key.secure
+$openssl rsa -in server.key.secure -out server.key
+$openssl dhparam -out dh2048.pem 2048
+(с небольшими модификациями заимствованы отсюда: https://stackoverflow.com/questions/6452756/exception-running-boost-asio-ssl-example/8407739#8407739)
+
+После этого в папке сервера остаются файлы: dh2048.pem, server.crt и все остальные, а в папку клиента необходимо скопировать файл server.crt.
+
