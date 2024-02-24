@@ -153,6 +153,7 @@ class client
         {
           static int THIS_FUNCTION_CALLS_COUNTER = 0;
           THIS_FUNCTION_CALLS_COUNTER++;
+          std::cout << "HTTPGetRequest::ReadData(...) #" << THIS_FUNCTION_CALLS_COUNTER << std::endl;
           size_t size = m_response.size();
           if (size > 0)
           {
