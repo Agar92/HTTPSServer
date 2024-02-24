@@ -9,7 +9,7 @@ $cmake -S . -B build/
 $cmake --build build/
 Далее запустить клиент:
 $./build/http-client <ip-адрес> <номер порта>
-Здесь для локальной машины ip-адрес может вводиться либо в виде "127.0.0.1" либо "localhost".
+Здесь для локальной машины ip-адрес может вводиться в виде "127.0.0.1" либо "localhost".
 Появляется информация об SSL-сертификате:
 $Verifying /C=RU/ST=Some-State/O=Internet Widgits Pty Ltd/CN=localhost/emailAddress=agar10@yandex.ru
 и строка с предложением ввода URI запрашиваемого на сервере ресурса:
