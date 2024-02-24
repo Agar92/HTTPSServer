@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/https-server.dir/server.cpp.o CMakeFiles/https-server.dir/helper/mime_types.cpp.o CMakeFiles/https-server.dir/helper/reply.cpp.o CMakeFiles/https-server.dir/helper/request_handler.cpp.o CMakeFiles/https-server.dir/helper/request_parser.cpp.o -o https-server  /usr/lib/x86_64-linux-gnu/libssl.so /usr/lib/x86_64-linux-gnu/libcrypto.so 

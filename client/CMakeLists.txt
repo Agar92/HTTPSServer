@@ -6,15 +6,16 @@ file(GLOB HEADERS "*.hpp")
 file(GLOB SOURCES "*.cpp")
 list(REMOVE_ITEM SOURCES "/home/andrey/Desktop/HTTPServer/http/main.cpp")
 
-add_executable(http-client client.cpp ${SOURCES} ${HEADERS})
+set(TARGET "https-client")
+add_executable(${TARGET} client.cpp ${SOURCES} ${HEADERS})
 
-find_package (Boost REQUIRED)
-find_package (OpenSSL REQUIRED)
-target_include_directories(http-client PRIVATE
+find_package(Boost REQUIRED)
+find_package(OpenSSL REQUIRED)
+target_include_directories(${TARGET} PRIVATE
 	${Boost_INCLUDE_DIR}
 )
 
-target_link_libraries(http-client PRIVATE
+target_link_libraries(${TARGET} PRIVATE
     ${Boost_LIBRARIES}
     OpenSSL::SSL
     OpenSSL::Crypto

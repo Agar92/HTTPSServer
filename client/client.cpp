@@ -102,7 +102,7 @@ class client
           last_dot_pos != std::string::npos && last_dot_pos > last_slash_pos)
         requested_file_extension = m_relativeURL.substr(last_dot_pos + 1);
       else
-        requested_file_extension = ".dat";
+        requested_file_extension = "dat";
       bool data_is_text = false;
       if (requested_file_extension == "txt" ||
           requested_file_extension == "dat" ||

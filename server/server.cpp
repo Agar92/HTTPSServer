@@ -103,7 +103,7 @@ public:
   void do_write()
   {
     boost::asio::async_write(socket_, reply_.to_buffers(),
-        [this,contents](boost::system::error_code ec, std::size_t bytes_transferred)
+        [this](boost::system::error_code ec, std::size_t bytes_transferred)
         {
           if (!ec)
           {

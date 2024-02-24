@@ -27,13 +27,11 @@ public:
 
   /// Parse some data. The enum return value is good when a complete request has
   /// been parsed, bad if the data is invalid, indeterminate when more data is
-  /// required. The InputIterator return value indicates how much of the input
-  /// has been consumed.
+  /// required. The InputIterator return value indicates how much of the input has been consumed.
   template <typename InputIterator>
   std::tuple<result_type, InputIterator> parse(request& req,
       InputIterator begin, InputIterator end)
   {
-    std::cout<<"request_parser::parse"<<std::endl;
     while (begin != end)
     {
       result_type result = consume(req, *begin++);
