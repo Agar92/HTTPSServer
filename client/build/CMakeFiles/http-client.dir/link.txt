@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/http-client.dir/client.cpp.o CMakeFiles/http-client.dir/HTTPGetRequest.cpp.o -o http-client  /usr/lib/x86_64-linux-gnu/libssl.so /usr/lib/x86_64-linux-gnu/libcrypto.so 

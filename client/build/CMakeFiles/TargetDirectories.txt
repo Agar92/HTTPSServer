@@ -1,4 +1,0 @@
-/home/andrey/Desktop/HTTPSServer/ssl_test_clean/client/build/CMakeFiles/https-client.dir
-/home/andrey/Desktop/HTTPSServer/ssl_test_clean/client/build/CMakeFiles/clangformat.dir
-/home/andrey/Desktop/HTTPSServer/ssl_test_clean/client/build/CMakeFiles/edit_cache.dir
-/home/andrey/Desktop/HTTPSServer/ssl_test_clean/client/build/CMakeFiles/rebuild_cache.dir
